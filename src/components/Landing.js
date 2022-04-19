@@ -7,9 +7,12 @@ import { getCoin } from "../services/api";
 import Loader from "./Loader";
 import Coin from "./Coin";
 
+// Styles
+import styles from "./Landing.module.css";
+
 const Landing = () => {
   const [coins, setCoins] = useState([]);
-  const [search , setSearch] = useState('');
+  const [search, setSearch] = useState("");
   useEffect(() => {
     const fetchAPI = async () => {
       setCoins(await getCoin());
@@ -17,32 +20,37 @@ const Landing = () => {
     fetchAPI();
   }, []);
 
-  const searchHandler = event => {
-      setSearch(event.target.value)
-  }
+  const searchHandler = (event) => {
+    setSearch(event.target.value);
+  };
 
-  const searchedCoins = coins.filter(coin => coin.name.toLowerCase().includes(search.toLowerCase()))
+  const searchedCoins = coins.filter((coin) =>
+    coin.name.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
-    <div>
-      <input type="search" placeholder="Search . . ." value={search} onChange={searchHandler} />
-      {coins.length ? (
-        searchedCoins.map((coin) => (
-          <Coin
-            key={coin.id}
-            name={coin.name}
-            symbol={coin.symbol}
-            image={coin.image}
-            price={coin.current_price}
-            marketCap={coin.market_cap}
-            priceChange={coin.rice_change_percentage_24h}
-          />
-        ))
-      ) : (
-        <Loader />
-      )}
-    </div>
-  );
+    <>
+        <input className={styles.input} type="text" placeholder="Search" value={search} onChange={searchHandler} />
+        {
+            coins.length ?
+                <div className={styles.coinContainer}>
+                    {
+                        searchedCoins.map(coin => <Coin
+                            key={coin.id}
+                            name={coin.name}
+                            image={coin.image}
+                            symbol={coin.symbol}
+                            price={coin.current_price}
+                            marketCap={coin.market_cap}
+                            priceChange={coin.price_change_percentage_24h}
+                        />)
+                    }
+                </div> :
+
+                <Loader />
+        }
+    </>
+);
 };
 
 export default Landing;
